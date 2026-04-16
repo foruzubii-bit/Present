@@ -46,6 +46,7 @@
       color: var(--white);
       font-family: var(--font-body);
       overflow-x: hidden;
+      overflow-y: hidden;
       cursor: none;
     }
 
@@ -2381,7 +2382,7 @@
           document.getElementById('lockScreen').classList.add('hidden');
           setTimeout(() => document.getElementById('lockScreen').remove(), 950);
           document.getElementById('countdownScreen').classList.remove('hidden');
-          document.body.style.overflow = 'hidden'; // Lock scroll during countdown
+          document.body.style.overflowY = 'hidden'; // Lock scroll during countdown
           document.getElementById('musicToggle').classList.add('visible');
           startCountdown(bdayDate);
           return;
@@ -2393,6 +2394,7 @@
         document.getElementById('lockScreen').classList.add('hidden');
         setTimeout(() => document.getElementById('lockScreen').remove(), 950);
         document.getElementById('musicToggle').classList.add('visible');
+        document.body.style.overflowY = 'auto'; // Restore scroll because they can see the story now
       } catch (e) {
         bgm.pause();
         inp.classList.remove('wrong'); void inp.offsetWidth; inp.classList.add('wrong');
@@ -2420,7 +2422,7 @@
           const cd = document.getElementById('countdownScreen');
           if (cd) { 
             cd.classList.add('hidden'); 
-            setTimeout(() => { cd.remove(); document.body.style.overflow = ''; }, 950); 
+            setTimeout(() => { cd.remove(); document.body.style.overflowY = 'auto'; }, 950); 
           }
           return;
         }
@@ -2472,7 +2474,7 @@
       setTimeout(() => { screen.style.transition = 'opacity 2.5s ease'; screen.style.opacity = '0'; }, 500);
       setTimeout(() => {
         screen.remove(); container.remove();
-        document.body.style.overflow = ''; // Restore scroll after bypass
+        document.body.style.overflowY = 'auto'; // Restore scroll after bypass
 
         document.getElementById('musicToggle').classList.add('visible');
       }, 3000);
