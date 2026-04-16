@@ -2383,9 +2383,15 @@
         const today = new Date();
         const isDec29 = today.getMonth() === 11 && today.getDate() === 29;
         if (!isDec29) {
-          let targetYear = today.getFullYear();
-          if (today.getMonth() > 11 || (today.getMonth() === 11 && today.getDate() > 29)) targetYear++;
-          const bdayDate = new Date(`December 29, ${targetYear} 00:00:00`).getTime();
+          // Always find the NEXT December 29th in the yearly loop
+          const now = new Date();
+          let targetYear = now.getFullYear();
+          const thisDec29 = new Date(targetYear, 11, 29, 0, 0, 0).getTime();
+          if (Date.now() >= thisDec29) {
+            // Dec 29 of this year has already passed (or it's Dec 30/31), go to next year
+            targetYear++;
+          }
+          const bdayDate = new Date(targetYear, 11, 29, 0, 0, 0).getTime();
           document.getElementById('lockScreen').classList.add('hidden');
           setTimeout(() => document.getElementById('lockScreen').remove(), 950);
           document.getElementById('countdownScreen').classList.remove('hidden');
@@ -2429,7 +2435,14 @@
           const cd = document.getElementById('countdownScreen');
           if (cd) {
             cd.classList.add('hidden');
-            setTimeout(() => { cd.remove(); document.body.style.overflowY = 'auto'; }, 950);
+            setTimeout(() => {
+              cd.remove();
+              // ✨ Dec 29 has arrived! Auto-reveal the story
+              document.body.style.overflowY = 'auto';
+              document.querySelectorAll('[data-reveal]').forEach(el => el.classList.add('revealed'));
+              // Trigger confetti burst to celebrate
+              setTimeout(() => launchConfetti(), 800);
+            }, 950);
           }
           return;
         }
