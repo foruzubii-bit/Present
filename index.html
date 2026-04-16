@@ -584,18 +584,24 @@
       color: rgba(255, 245, 255, 0.95);
       font-weight: 300;
       text-align: left;
+      margin: 0;
+      padding-bottom: 12px;
+    }
+
+    .chapter-text:last-child {
+      padding-bottom: 0;
     }
 
     .chapter-text+.chapter-text {
-      margin-top: 10px;
+      margin-top: 4px;
     }
 
     .chapter-quote {
       font-family: var(--font-script);
       font-size: 1.35rem;
       color: #d8a8ff;
-      margin: 32px 0;
-      padding: 22px 26px;
+      margin: 22px 0;
+      padding: 18px 22px;
       border-left: 3px solid rgba(180, 80, 255, 0.8);
       text-align: left;
       font-style: italic;
@@ -2319,49 +2325,51 @@
       function textToHTML(raw) {
         if (!raw) return '';
         let lines = raw.trim().split(/\n/);
-        let html = '';
-        let inQuote = false;
-        let pContent = '';
+        let blocks = [];
+        let currBlockType = 'text';
+        let currContent = [];
 
-        for (let i = 0; i < lines.length; i++) {
-          let t = lines[i].trim();
-          
+        for (let t of lines) {
+          t = t.trim();
           if (!t) {
-            // Empty line
-            if (pContent) {
-              html += inQuote ? `<div class="chapter-quote">${pContent}</div>` : `<p class="chapter-text">${pContent}</p>`;
-              pContent = '';
-              inQuote = false;
+            // Blank line => flush block
+            if (currContent.length > 0) {
+              blocks.push({ type: currBlockType, text: currContent.join('<br>') });
+              currContent = [];
             }
-            html += '<br>';
+            currBlockType = 'text'; // Reset default
             continue;
           }
 
-          let startsWithQuote = t.match(/^["“”']/) || t.startsWith('--') || t.startsWith('—');
+          // Check if this line visually starts a quote block
+          let isQuoteStart = t.match(/^["“”']/) || t.startsWith('--') || t.startsWith('—');
           
-          if (startsWithQuote && !inQuote) {
-            if (pContent) {
-              html += `<p class="chapter-text">${pContent}</p>`;
+          if (isQuoteStart && currBlockType !== 'quote') {
+            if (currContent.length > 0) {
+              blocks.push({ type: currBlockType, text: currContent.join('<br>') });
+              currContent = [];
             }
-            inQuote = true;
-            pContent = t;
-          } else {
-            if (pContent) pContent += '<br>' + t;
-            else pContent = t;
+            currBlockType = 'quote';
           }
+          
+          currContent.push(t);
 
-          let endsWithQuote = t.match(/["“”']$/) || t.endsWith('--') || t.endsWith('—');
-          if (inQuote && endsWithQuote) {
-            html += `<div class="chapter-quote">${pContent}</div>`;
-            pContent = '';
-            inQuote = false;
+          // Check if the quote completes neatly on this line
+          if (currBlockType === 'quote' && t.match(/["“”']$/)) {
+            blocks.push({ type: 'quote', text: currContent.join('<br>') });
+            currContent = [];
+            currBlockType = 'text';
           }
         }
         
-        if (pContent) {
-          html += inQuote ? `<div class="chapter-quote">${pContent}</div>` : `<p class="chapter-text">${pContent}</p>`;
+        if (currContent.length > 0) {
+          blocks.push({ type: currBlockType, text: currContent.join('<br>') });
         }
-        return html;
+
+        return blocks.map(b => {
+          if (b.type === 'quote') return `<div class="chapter-quote">${b.text}</div>`;
+          return `<p class="chapter-text">${b.text}</p>`;
+        }).join('');
       }
       ['ch1', 'ch2', 'ch3', 'ch4', 'ch5', 'ch6', 'ch7', 'ch8'].forEach(id => {
         const el = document.getElementById('enc-' + id);
