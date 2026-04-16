@@ -587,7 +587,7 @@
     }
 
     .chapter-text+.chapter-text {
-      margin-top: 18px;
+      margin-top: 10px;
     }
 
     .chapter-quote {
@@ -2075,7 +2075,7 @@
         <p class="chapter-label">Chapter One</p>
         <h2 class="chapter-title">The Beginning</h2>
         <div class="chapter-divider"></div>
-        <div class="date-badge">October 10, 2024</div>
+        <div class="date-badge">October 10, 2025</div>
         <div id="enc-ch1"></div>
       </div>
     </div>
@@ -2318,20 +2318,50 @@
     function injectContent(data) {
       function textToHTML(raw) {
         if (!raw) return '';
-        return raw.trim().split(/\n\n+/).map(para => {
-          const line = para.trim();
-          // Detect any line starting with straight or curly quote characters
-          const isQuote = line.startsWith('"') ||
-                          line.startsWith('\u201c') ||
-                          line.startsWith('\u201d') ||
-                          line.startsWith("'") ||
-                          (line.startsWith('"') && line.endsWith('"')) ||
-                          (line.startsWith('\u201c') && line.endsWith('\u201d'));
-          if (isQuote) {
-            return `<div class="chapter-quote">${line.replace(/\n/g, '<br>')}</div>`;
+        let lines = raw.trim().split(/\n/);
+        let html = '';
+        let inQuote = false;
+        let pContent = '';
+
+        for (let i = 0; i < lines.length; i++) {
+          let t = lines[i].trim();
+          
+          if (!t) {
+            // Empty line
+            if (pContent) {
+              html += inQuote ? `<div class="chapter-quote">${pContent}</div>` : `<p class="chapter-text">${pContent}</p>`;
+              pContent = '';
+              inQuote = false;
+            }
+            html += '<br>';
+            continue;
           }
-          return `<p class="chapter-text">${line.replace(/\n/g, '<br>')}</p>`;
-        }).join('<br>');
+
+          let startsWithQuote = t.match(/^["“”']/) || t.startsWith('--') || t.startsWith('—');
+          
+          if (startsWithQuote && !inQuote) {
+            if (pContent) {
+              html += `<p class="chapter-text">${pContent}</p>`;
+            }
+            inQuote = true;
+            pContent = t;
+          } else {
+            if (pContent) pContent += '<br>' + t;
+            else pContent = t;
+          }
+
+          let endsWithQuote = t.match(/["“”']$/) || t.endsWith('--') || t.endsWith('—');
+          if (inQuote && endsWithQuote) {
+            html += `<div class="chapter-quote">${pContent}</div>`;
+            pContent = '';
+            inQuote = false;
+          }
+        }
+        
+        if (pContent) {
+          html += inQuote ? `<div class="chapter-quote">${pContent}</div>` : `<p class="chapter-text">${pContent}</p>`;
+        }
+        return html;
       }
       ['ch1', 'ch2', 'ch3', 'ch4', 'ch5', 'ch6', 'ch7', 'ch8'].forEach(id => {
         const el = document.getElementById('enc-' + id);
