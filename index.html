@@ -586,6 +586,18 @@
       text-align: left;
     }
 
+    .chapter-highlight {
+      font-family: var(--font-script);
+      font-size: 2.2rem;
+      color: #e060ff;
+      text-align: center;
+      margin-bottom: 30px;
+      text-shadow: 0 0 15px rgba(224, 96, 255, 0.4);
+      display: block;
+      border-bottom: 1px solid rgba(224, 96, 255, 0.15);
+      padding-bottom: 15px;
+    }
+
     .chapter-text+.chapter-text {
       margin-top: 18px;
     }
@@ -1983,7 +1995,7 @@
     </div>
     <span class="countdown-icon">🌙</span>
     <h2 class="countdown-title">Not Quite Time Yet...</h2>
-    <p class="countdown-sub">Your special birthday story unlocks only on October 10th, 2025 ✨</p>
+    <p class="countdown-sub">Your special birthday story unlocks only on December 29th ✨</p>
     <div class="timer">
       <div class="time-box"><span id="cd-days">00</span>
         <p>Days</p>
@@ -2260,42 +2272,41 @@
   <script>
     /* ─── ENCRYPTED CONTENT ─── */
     const ENCRYPTED_CONTENT = {
-      "salt": "zubeariya2025",
       "ch1": {
-        "iv": "edCWNQynPMugYYj4",
-        "ct": "WF1PAO8p+KaSLNmckudq9sxlkVg0825gAAZhZ9Jb/N2CToFnehr28YXPsomfcZd3kLJU66DUwsBQ3tU0x5urWoxsHlTEWTLiAHZ+9Y/U7cYMGqN0ei98L9V9iwfAYX0lWYeesUYuQ5nEB6L2lqZYNWjKbh3dGzX2i4ZeSC+02t+KJfaRM9kcR4JDkAgU/i5XVYgshjltf9Oc7DOqKySg"
+        "iv": "wjP7FIK7W8RzupQF",
+        "ct": "zAQPF3ehx5mKTaVAGRPJtrSmWehD1bizj9TRUUrmS4pW2z4vG9BTQE8OutN5wkGO0swBaUk0CcZ/r9Av8KWU9RKRtlyPIjKGZH/G06eymSi2DzBR7yseef/xz/o5Wiq78LhO+R8c4d+0T0rdhBZ8PMgAhPZ7C4ctbU5b5wxf46/Cj5xRHOhjN1j+dXgPGkTvgJKnUSa0XLMglwfYQM7y1B80tBNRpY0BtO6grvYM4ZDmIYfJmmnooOdbcmOZk68PDYT0SeCoDHyMOP1gmfOJYWCk39iKgg=="
       },
       "ch2": {
-        "iv": "l3T8XHdvm1TPC9kP",
-        "ct": "D9X40icpAyXKry197Njh9Q4CwEWuPYi78tdz5hPk46+PdKdlO77r/05dk0n6ugGXwzN0VaZAbVa5L6S27jAlBNG0IT5GbTUz81niBeSvMwug/B1DC79Cc2QaaeUTad5NZ0QpyxBKMq55ITxCyaN0w4WL1jm41pRXGN3IS+6SibuNfRNixVQKa8V1Ki/PWgrM77rVDUP7Q2td3+gxexZUd2OyvgZaM1kuG/tn992GwCKClg=="
+        "iv": "Lpyy0ViI4ZwmJ9Ef",
+        "ct": "ulkCmSFvq1K1RXeRo4w9/FgOayp1lWpO9T1sEmJJT3gS27g1viW2xfTDi5fb7lPAJoFvY9JyBLpnkIZ4Iu4RzSeFbh7ABrQQvj2kq1Cg85y1vxkIh93KbyQ63khKyq1PXmfykEHzdSBwf0AXI85xhx8o5EOSpF/b7cuCm7BDWd4liDPKpT6ITQaZj0N8d+ssMHUox8VCrpcBo42TvT9ZA0EhmMamlLqTnibVJ96dxcCCBw=="
       },
       "ch3": {
-        "iv": "21m+Xbhkig9Vlzsy",
-        "ct": "EoE1dHzhZlCBgIZ070lHNJmTss8LDPVvd92XNOcNHix5Wop7H+TwojjyRkRrY4D6D4rSkBnifkaotsHxuzYmLlNe7TuIq0B7V/GbCkxWTC6e6Kf+1B8l7OTgUumJgggriICiPqKt/jsfgb6HjiIMHTXDpqJD5yiCo5L+uLinq0PltLJyfItYGGJN4OhFg4Bf2mBfefe3pkAtSzh79H8sShU="
+        "iv": "cNzsRneMFJ8TgFWF",
+        "ct": "0ndTNiXdleQZ5xxBx6sP2INLzJE4LIHNGfSa2OSih3233qy+c1gat74aNvCVmEGjJmK/M4NqNJMFUxE5kTIuCIR2kFHjVdMuwsKD5VCVKxeRSoBS/L0VTt3fgBXWH1D3m9H5EjDXSSPScnfWCTstc/JKix554nUseMmFgWRzISLS7HewNQuWC7gxovRuGiI0ZA==XCwD+WAbbG8+q58Z2jKOJQ=="
       },
       "ch4": {
-        "iv": "Xdji3wvRTachOhxo",
-        "ct": "9a2pa88DrOgUJXoS/x5+3VbMp3WGdgWOVYUI9Hu9xe+ROH+oXW8kgqZX1grpF5DpPQtvHPVeCQH2/MPdMT1yo1SR/n+GLDvk6NUS8Gel5F8yG9X78thEan9aRZ5nr20HqLSfvtNOorv3RD4SX9dvZIyuxjeKg8VqAzrFX3i+9fZri02YhiKhdj3sCJnjnn3B0NjJKyWtTzmImwEq2pGRklU6yW0weyp+GKuyS6Nttuh5MirvLcClaco="
+        "iv": "CcwbUcSV5ZORgFTg",
+        "ct": "6M35dEmqn2D5tIjEa1wGySIt0S+Ze3z/52EH2MKETGVyPI4D+DAwt7kIKhGtbkR0QETQBvSduVquGVSgAtzM8g8/8PoMG/vNbzRhQKdBTQuWiGL2IhR6ie9Vam6TDdOBb5dU4/QVNLS6MLE0HooNWSYMLesMR/Y8GDtgMWGiARleny4COqarzWUxmZcji7v4O8n4dVxm0GGBsx5co/fmSRrJSYZ4sbWhGw==fkaSBWCaFV8QNOJkMrCbEQ=="
       },
       "ch5": {
-        "iv": "bQb79gYTn+VkuXN+",
-        "ct": "EuVkL4JA48g3KjUYEPGcSk0L1ycYYDOchLKXe7eXhS6f7vne2bv2OSdcfis4Un/rwIoP0yndtv0w7Ubgi4MJutEqnaSvQ115c4hc0e4ASaT7a/pmx7koeOLLasUiFqeyMcwcuqF54BY4NM8YedfpX0Lof5/OoZiPkDm4CgV06q8az82ORhsz6q/oVPSCBFKEu7MSUyiQqmdL+x5rFk4GXCH6Mww+QNk4sb/Z+TRUY/iGJ/1ApjLChRImUR/xti0JaBkZg1YoH+FdoVnRU/U="
+        "iv": "m1gUoe8OouHM6oqJ",
+        "ct": "1sdtwfNDhPWl2wh/IDqEjXxe3cnD17IRjDPANZCNBRqcPeouKyjGxVcKXFzTsv6ZS/VPEQdDX4OrXFDpFb2b5+7Lw+UAZV3F8QR3Q4ppVp8z6Ji6uCOufc0HjUmvBMX6XBEJWb9/lsGeCXkjD6zis/X6TbjxxQ7eCQnK+STRH9nAdG5Mhyjg1HuSpm/sQU9dPQtnKWlZ8wW+pTfi4k2xgbHMXNu+HOOzcVagy2Evxzu0vqetgI1lUX+3EGya5Q==4M6P5Wuhc69SzU+rxHlLIg=="
       },
       "ch6": {
-        "iv": "jRR3ahwkkFRXVBcx",
-        "ct": "mgQ/ZDfVh6PMpR9JitYsGh/GaApwbhhXACkpebR8lQyGDvWTuTElmRciWfKdlAYduz8Xwvh53emkghkpNPc5iz+jFSFR2WX5FZguSg1Oj0KoPBwLuzTwRlA+bKi98iIO66jgV7oZ8zS3lQswypmNFc4BUnMq3paVNKq+vnSly1uRzeSe2Ix7PvyJUq1cGJtCmT64QOGO9HRgvRn2"
+        "iv": "mG3TvBEj2JVzeHFI",
+        "ct": "MG1efNShvFAJ7Hhx+s8JSQCTTT+lNhSFxHPQvn6c3LxYYvgQ8Q4oSsbJh86lYzFsgN6ayLgUR2a2b0XSuPCOqIcqkZoQhOQOmRrGHR7TZnaIbKLcsX3WOYW+a7bEC4bCXMcZFPIjuJuDJYwLEr6gCc09U4UUmXzvY7m0/ci3NINfpTc/kX7jWyUZPVY=M4gV+1sAQR+q4XypKGd5xA=="
       },
       "ch7": {
-        "iv": "MF2Gn2kvoYSaAhBL",
-        "ct": "GRRTVHlqdIuwetCQcEh+czggwfL5Z5+E/p5y93XL6dOXCLgVOfWLVHWSpC8SE6uX6RygVAw+uBVibcM1GFH95Teqx+UOGeV+5jTAQCIqHpCXbGQOxM56ozkf3G02lcxdvGUv8W2Ilx9/8TBFDZaFIq/TvKPK6H4VjjwT4Xsklyf6T7SF2TPNkQk2nwS+AdznWbVFkEhYGFhpdlhMTEr3S7GSv7VusuxYmt9uUbjjZwPrM9puPSCmlE9Xi+g9lm8nux5jmWZHcex+vV4nOcHWsuGcIWTKE7g/umi/zq6W1mZL8F8wzX5kjMVegzhNlrzxC9gtesUqQVedCobAlLe3GhUTlw1eI3E2CsGS7J6Heq+9PmgS6dBYi+bL4dyHndrY+Jp3AG/WZWku5rS9MzXy09WcUEKEjKrb3ijzHrprIFtTVbPTDPiSBFa8Mra7h0TW3yVz2wWp+VUME1H/6XllQsXaxAyBaeCOx5PKgeBv6z8DKkZEhfTFOq1ED9yqG3xN"
+        "iv": "BcQPsQJcZpOBgLqn",
+        "ct": "uSENWtGU47RY2Snqwr3ZtIOX57mORG7FKglM5lA/lklDsTmCLlG5hiCb1hDkektiKXduurBf+HGYqxWT7dYj4eVL0qT0sCC10J6MGDLoBKTFrVK7WVf1T+su0Ox6R5FyGpoOSMOiHbU4/t6lRAo2jFeF2n2LzXFePiWfgU1IFx63U5rca58QubAiOJBfz2kCiL18KgsOUpwUeIct9/5Zf4YtpZEUe66urBiHsiaI0IjxHb8hC3QrfyOiYpcfen+8P/TQGkjSdU1reV2/JYhFJHy6rE/kBbyUiyq2a8ZDetcGSfEqCsIzEBxEMlR+ccZJgzdiJEezUfRaOewtKdxhZ+TOnia8CDhwB3preC/Q+rKwH8NSqzfKHDl5jjloGw0TAT07OjBFKjpwUe/6J7ICsfsQh7vvtAcGVSmZpUZDRvkKgpKClK/gKsXuVvCGCETKXFIYCgpLiUGjLwhNLSz/kI0YJu3pn/b9ka5lHkVWCfw=1OeV4QLi1Oi93yaOOgM9eA=="
       },
       "ch8": {
-        "iv": "/C5TmtuF7n0pgoN/",
-        "ct": "hIz1SPi8aWsTZVHV6O6Yr9pYDbboq37JfLZShlg4m0joWJdAOaKr8bjfuBJa18f+2htiBgCkabv8iDJRhB3tHbpTERsC3JSyv/IbeRzOTZZvke5mzW5dAUjp+LCePUAQBbpRIr+WjNOvRPAlc4tQ+yZWfUud1s/Oa6Ls83cxLhNQbt4RWxgAEoyVpCQ18zQ220szH2PbsHzSOFc4W5bTZtYryeX7oxexf3VfHFf6QrjKBYvK1RM2V7zdOzmQB8cqkDUIkfU="
+        "iv": "VzkVgZpLUuZHnbUj",
+        "ct": "OVZ9vTMvPNc/bUZlKd7kWiXBQVdeSsPZ6WN3L0bzOQSfSUAUYJa6p3EsRegMm2a+5jocNOD1rxTR93A87q2fdG2PiKAjjm1aSQMMVpCByaOSC5ohFH1V64b4G7JeJL5RBlCRuwTxQL9Uq2XSmGzMzytnzVVf2kbTVL+ikYlM5NLRPg5xZP7UuMek0U8kn5vyjVGKN4B86S8UTvmRxCWoXCyon2AUudvzGXg3prmypFHpAQ21fg==UuCV9nhZTROqqnbub8E0kg=="
       },
       "bday": {
-        "iv": "pCl020/p0PdpePVs",
-        "ct": "J+FHH4FRrbiCjCuN+qDFp7PMOWVhsrV+j5jdV0pZwYN0ZR1xFq1eIyfe8KVBr4uqKFMfes/RxKA2HCDqngWPT4ni10zs0Sb0sv+47T0FGxSH+EyPbryEwJAPYQilmroBvkJuzllYlBlhlm7RpJwfM78Yw7w2YgxpyWPhG1Z3tQIztak5CC3e1+jBCR0KrdnM8m4YAn7HSAsXukIuwluDjbf1eQRT9sctQAtMPqV6RmGarod8blK/0Tptl9g/MBhjWpm3DamuSRp54Z2QP9hqmfLOZNAt6m4Gm+bSO5KeEt88EJHe5y1ifYO3SojfNgLVPgjCrsQe9Tu05PyA4CNYS2YiTlJpZMWtI1Qb1qBjAwYaIDkptittq0O8FaLDbHiZfpXcdly7lagqV4V3M7wOcwWIEzI3mgjCM1vcME/diEH1x/0/wr7TrBM="
+        "iv": "ESVb11a2hiNWwC7e",
+        "ct": "ptq3qRUcQ5OFkarPRgSAxataq6DPTm6O67VkzkiPtsI8z11Sots2h6hH1su6bkXhHmhpSmg6JtjcqUBQTepVGLSlrpJBQZqI5e/bt3v5dCea7pDzJEnPE0LoRgPg9KoByxYveZ/fkXtY11kWZ7jLjYTA93jBnibflmus4mJOFteBkgqC/yMIRD8VTnkUqjk2g8jj8adt9+zBdU6czA7xCITba9Z/A7CV8OflXjmfGH6tnr3/TGNgway86BhOWU1BDgmn6CGE3EdyGBKJH5L31B8vdwqz6+ak+T+04lNjtb7HgA9NKPY/ia1FftxnieP42p2Ll8vxvQG5EjENBng+yAh8leI5Oro+JCya8iQlTp+138uIBLTBngz8OzWBhvbRQu46fJumbZxXdtSx09zGRllFRQhFBdoTug==JHBchrkUNumrrLGbjtahHg=="
       }
     };
 
@@ -2374,10 +2385,15 @@
         injectContent(data);
 
         const today = new Date();
-        const bdayDate = new Date(`October 10, 2025 00:00:00`).getTime();
-        const isUnlocked = today.getTime() >= bdayDate;
+        const isBday = today.getMonth() === 11 && today.getDate() === 29;
         
-        if (!isUnlocked) {
+        if (!isBday) {
+          let targetYear = today.getFullYear();
+          let bdayDate = new Date(targetYear, 11, 29, 0, 0, 0).getTime();
+          if (today.getTime() > bdayDate) {
+            bdayDate = new Date(targetYear + 1, 11, 29, 0, 0, 0).getTime();
+          }
+          
           document.getElementById('lockScreen').classList.add('hidden');
           setTimeout(() => document.getElementById('lockScreen').remove(), 950);
           document.getElementById('countdownScreen').classList.remove('hidden');
