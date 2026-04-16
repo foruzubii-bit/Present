@@ -2320,7 +2320,14 @@
         if (!raw) return '';
         return raw.trim().split(/\n\n+/).map(para => {
           const line = para.trim();
-          if (line.startsWith('"') || line.startsWith('\u201c')) {
+          // Detect any line starting with straight or curly quote characters
+          const isQuote = line.startsWith('"') ||
+                          line.startsWith('\u201c') ||
+                          line.startsWith('\u201d') ||
+                          line.startsWith("'") ||
+                          (line.startsWith('"') && line.endsWith('"')) ||
+                          (line.startsWith('\u201c') && line.endsWith('\u201d'));
+          if (isQuote) {
             return `<div class="chapter-quote">${line.replace(/\n/g, '<br>')}</div>`;
           }
           return `<p class="chapter-text">${line.replace(/\n/g, '<br>')}</p>`;
