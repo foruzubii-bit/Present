@@ -1983,7 +1983,7 @@
     </div>
     <span class="countdown-icon">🌙</span>
     <h2 class="countdown-title">Not Quite Time Yet...</h2>
-    <p class="countdown-sub">Your special birthday story unlocks only on December 29th ✨</p>
+    <p class="countdown-sub">Your special birthday story unlocks only on October 10th, 2025 ✨</p>
     <div class="timer">
       <div class="time-box"><span id="cd-days">00</span>
         <p>Days</p>
@@ -2374,11 +2374,10 @@
         injectContent(data);
 
         const today = new Date();
-        const isDec29 = today.getMonth() === 11 && today.getDate() === 29;
-        if (!isDec29) {
-          let targetYear = today.getFullYear();
-          if (today.getMonth() > 11 || (today.getMonth() === 11 && today.getDate() > 29)) targetYear++;
-          const bdayDate = new Date(`December 29, ${targetYear} 00:00:00`).getTime();
+        const bdayDate = new Date(`October 10, 2025 00:00:00`).getTime();
+        const isUnlocked = today.getTime() >= bdayDate;
+        
+        if (!isUnlocked) {
           document.getElementById('lockScreen').classList.add('hidden');
           setTimeout(() => document.getElementById('lockScreen').remove(), 950);
           document.getElementById('countdownScreen').classList.remove('hidden');
