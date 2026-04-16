@@ -1548,14 +1548,18 @@
     #countdownScreen {
       position: fixed;
       inset: 0;
+      width: 100vw;
+      height: 100vh;
       z-index: 99997;
-      background: linear-gradient(135deg, #000010 0%, #030022 40%, #07002e 70%, #000010 100%);
+      background: #000010;
+      background-image: linear-gradient(135deg, #000010 0%, #030022 40%, #07002e 70%, #000010 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
       padding: 30px;
+      overflow: hidden;
       transition: opacity 0.9s ease, visibility 0.9s ease;
     }
 
