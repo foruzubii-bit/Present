@@ -72,13 +72,24 @@
     /* ── CURSOR ── */
     #cursor {
       position: fixed;
-      top: -50px;
-      left: -50px;
-      font-size: 22px;
-      pointer-events: none;
-      z-index: 999999;
+      top: -100px;
+      left: -100px;
+      font-size: 24px;
+      pointer-events: none !important;
+      z-index: 2147483647 !important;
+      /* Max z-index above all modals, screens, and canvases */
       transform: translate(-50%, -50%);
-      filter: drop-shadow(0 0 10px rgba(200, 168, 255, 0.9));
+      filter: drop-shadow(0 0 10px rgba(200, 168, 255, 0.95)) drop-shadow(0 0 20px rgba(180, 100, 255, 0.5));
+      user-select: none;
+      -webkit-user-select: none;
+      transition: transform 0.08s ease-out, filter 0.2s ease, opacity 0.2s ease;
+      will-change: left, top, transform;
+      line-height: 1;
+    }
+
+    #cursor.active {
+      transform: translate(-50%, -50%) scale(1.35) rotate(-12deg);
+      filter: drop-shadow(0 0 14px rgba(255, 215, 0, 1)) drop-shadow(0 0 25px rgba(255, 180, 50, 0.7));
     }
 
     /* ── CANVASES ── */
@@ -90,6 +101,9 @@
       height: 100%;
       z-index: 0;
       pointer-events: none;
+      transform: translateZ(0);
+      will-change: transform;
+      backface-visibility: hidden;
     }
 
     #confetti-canvas {
@@ -100,21 +114,44 @@
       height: 100%;
       pointer-events: none;
       z-index: 100;
+      transform: translateZ(0);
+      will-change: transform;
+      backface-visibility: hidden;
     }
 
-    /* ── OCEAN WAVES (night beach) ── */
-    .bg-ocean {
+    /* ── SNOW SCENE (BACKGROUND) ── */
+    #snow-bg-canvas {
       position: fixed;
-      bottom: 0;
+      top: 0;
       left: 0;
       width: 100%;
-      height: auto;
-      z-index: 0;
+      height: 100%;
       pointer-events: none;
+      z-index: 1;
+      /* Sits behind sections and cards */
+      transform: translateZ(0);
+      will-change: transform;
+      backface-visibility: hidden;
     }
 
-    .wave1 {
-      animation: wave-shift 8s ease-in-out infinite;
+    /* ── FALLING SNOW (FOREGROUND) ── */
+    #snow-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 15;
+      /* Snowflakes drift gently in front of content */
+      transform: translateZ(0);
+      will-change: transform;
+      backface-visibility: hidden;
+    }
+
+    /* ── OCEAN WAVES (hidden in winter snow theme to prevent clashes) ── */
+    .bg-ocean {
+      display: none !important;
     }
 
     .wave2 {
@@ -291,7 +328,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 1;
+      z-index: 5;
       padding: 80px 20px;
     }
 
@@ -471,10 +508,10 @@
     }
 
     .chapter-card {
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      border: 1px solid rgba(140, 80, 255, 0.22);
+      background: rgba(18, 6, 36, 0.72);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(140, 80, 255, 0.28);
       border-radius: 24px;
       padding: 55px 50px;
       box-shadow: 0 0 50px rgba(40, 0, 90, 0.5), inset 0 0 50px rgba(40, 0, 90, 0.18);
@@ -980,29 +1017,17 @@
       text-align: center;
     }
 
-    /* ── FLOATING SPARKLES ── */
-    .floating-sparkle {
+    /* ── TOUCH / CLICK WINTER SPARKLES BURST ── */
+    .winter-sparkle {
       position: fixed;
-      font-size: 20px;
+      font-size: 15px;
       pointer-events: none;
-      z-index: 50;
-      animation: float-up 2.8s ease forwards;
-    }
-
-    @keyframes float-up {
-      0% {
-        transform: translateY(0) scale(0) rotate(-20deg);
-        opacity: 1;
-      }
-
-      50% {
-        opacity: 0.85;
-      }
-
-      100% {
-        transform: translateY(-220px) scale(1.6) rotate(20deg);
-        opacity: 0;
-      }
+      z-index: 999998;
+      user-select: none;
+      transform: translate(-50%, -50%) translateZ(0);
+      will-change: transform, opacity;
+      filter: drop-shadow(0 0 6px rgba(215, 235, 255, 0.95));
+      transition: transform 0.72s cubic-bezier(0.12, 0.8, 0.25, 1), opacity 0.72s ease-out;
     }
 
     @keyframes fadeInUp {
@@ -1551,6 +1576,232 @@
       transform: scale(1.1);
     }
 
+    /* ── COCOA / WARMTH TOGGLE ── */
+    #cocoaToggle {
+      position: fixed;
+      bottom: 25px;
+      left: 25px;
+      z-index: 99999;
+      background: rgba(36, 14, 10, 0.75);
+      border: 1.5px solid rgba(255, 175, 100, 0.45);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 1.25rem;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 18px rgba(255, 130, 40, 0.35);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: all 0.35s ease;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.8);
+    }
+
+    #cocoaToggle.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+
+    #cocoaToggle:hover {
+      background: rgba(60, 24, 16, 0.88);
+      box-shadow: 0 0 28px rgba(255, 150, 50, 0.65);
+      transform: scale(1.12) rotate(-5deg);
+    }
+
+    .cocoa-steam {
+      position: absolute;
+      top: -12px;
+      font-size: 0.82rem;
+      opacity: 0.8;
+      animation: steam-float 2.2s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes steam-float {
+
+      0%,
+      100% {
+        transform: translateY(0) scale(0.85);
+        opacity: 0.4;
+      }
+
+      50% {
+        transform: translateY(-5px) scale(1.1);
+        opacity: 0.95;
+      }
+    }
+
+    /* ── SCREEN FROST CONDENSATION (Melts as you scroll) ── */
+    #screenFrostVignette {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 12;
+      box-shadow: inset 0 0 85px 22px rgba(215, 238, 255, 0.16),
+        inset 0 0 170px 65px rgba(180, 215, 255, 0.08);
+      transition: opacity 0.4s ease;
+    }
+
+    /* ── WARMTH PULSE OVERLAY ── */
+    #warmthPulseOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 99990;
+      opacity: 0;
+      background: radial-gradient(circle at 15% 85%, rgba(255, 160, 50, 0.38) 0%, rgba(255, 90, 40, 0.18) 45%, rgba(180, 40, 80, 0.08) 75%, transparent 100%);
+      transition: opacity 0.6s ease;
+    }
+
+    #warmthPulseOverlay.pulsing {
+      opacity: 1;
+    }
+
+    /* ── COCOA MODAL & POPUP NOTE ── */
+    .cocoa-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(8, 3, 16, 0.65);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 99995;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    .cocoa-modal.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .cocoa-modal-card {
+      background: linear-gradient(145deg, rgba(32, 14, 28, 0.90), rgba(20, 8, 36, 0.95));
+      border: 1px solid rgba(255, 180, 110, 0.35);
+      border-radius: 28px;
+      max-width: 460px;
+      width: 100%;
+      padding: 42px 36px 36px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 0 60px rgba(255, 120, 40, 0.28), 0 0 30px rgba(140, 40, 180, 0.25);
+      transform: translateY(0) scale(1);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .cocoa-modal.hidden .cocoa-modal-card {
+      transform: translateY(25px) scale(0.92);
+    }
+
+    .cocoa-steam-anim {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .cocoa-steam-anim span {
+      display: inline-block;
+      width: 3px;
+      height: 18px;
+      background: linear-gradient(to top, rgba(255, 200, 150, 0.8), transparent);
+      border-radius: 3px;
+      animation: steam-line 1.8s ease-in-out infinite;
+    }
+
+    .cocoa-steam-anim span:nth-child(2) {
+      animation-delay: 0.35s;
+      height: 24px;
+    }
+
+    .cocoa-steam-anim span:nth-child(3) {
+      animation-delay: 0.7s;
+    }
+
+    @keyframes steam-line {
+
+      0%,
+      100% {
+        transform: translateY(0) scaleY(0.7);
+        opacity: 0.3;
+      }
+
+      50% {
+        transform: translateY(-8px) scaleY(1.15);
+        opacity: 0.9;
+      }
+    }
+
+    .cocoa-modal-emoji {
+      font-size: 2.8rem;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 0 15px rgba(255, 180, 80, 0.6));
+    }
+
+    .cocoa-modal-title {
+      font-family: var(--font-heading);
+      font-size: 1.55rem;
+      color: #fff;
+      margin-bottom: 14px;
+      letter-spacing: 1px;
+      background: linear-gradient(135deg, #ffffff, #ffe5c2, #ffb884);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .cocoa-modal-quote {
+      font-family: var(--font-script);
+      font-size: 1.25rem;
+      color: rgba(255, 245, 235, 0.92);
+      line-height: 1.75;
+      margin-bottom: 22px;
+    }
+
+    .cocoa-modal-tagline {
+      font-size: 0.82rem;
+      letter-spacing: 2px;
+      color: rgba(255, 190, 130, 0.75);
+      margin-bottom: 26px;
+    }
+
+    .cocoa-modal-btn {
+      background: linear-gradient(135deg, #ff9436, #e65c00);
+      color: #1a0800;
+      font-weight: 700;
+      font-family: var(--font-heading);
+      border: none;
+      padding: 13px 36px;
+      border-radius: 50px;
+      font-size: 0.98rem;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(255, 130, 40, 0.45);
+      transition: all 0.3s ease;
+    }
+
+    .cocoa-modal-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 35px rgba(255, 150, 50, 0.7);
+    }
+
     /* ── COUNTDOWN SCREEN ── */
     #countdownScreen {
       position: fixed !important;
@@ -1569,13 +1820,13 @@
       text-align: center;
       padding: 30px;
       overflow: hidden;
-      transition: opacity 0.9s ease, visibility 0.9s ease;
+      transition: opacity 2.4s cubic-bezier(0.25, 1, 0.5, 1), visibility 2.4s cubic-bezier(0.25, 1, 0.5, 1);
     }
 
     #countdownScreen.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
     }
 
     @keyframes gentle-hover {
@@ -1724,12 +1975,20 @@
 
     /* ── RESPONSIVE 768px ── */
     @media (max-width:768px) {
-      body {
-        cursor: auto;
+
+      *,
+      *::before,
+      *::after,
+      body,
+      button,
+      input,
+      textarea,
+      a {
+        cursor: auto !important;
       }
 
       #cursor {
-        display: none;
+        display: none !important;
       }
 
       .section {
@@ -1955,6 +2214,10 @@
     <source src="B'Day.mp3#t=0.4" type="audio/mpeg">
   </audio>
   <button id="musicToggle" onclick="toggleMusic()" title="Play/Pause Music">🎵</button>
+  <button id="cocoaToggle" onclick="triggerWarmth()" title="A Cup of Warmth ☕">
+    <span class="cocoa-steam">♨️</span>
+    <span class="cocoa-icon">☕</span>
+  </button>
 
   <!-- LOADER -->
   <div id="loader">
@@ -2015,9 +2278,27 @@
   </div>
 
   <div id="shatterContainer"></div>
-  <div id="cursor">🌙</div>
   <canvas id="sky-canvas"></canvas>
+  <canvas id="snow-bg-canvas"></canvas>
+  <canvas id="snow-canvas"></canvas>
   <canvas id="confetti-canvas"></canvas>
+  <div id="screenFrostVignette"></div>
+  <div id="warmthPulseOverlay"></div>
+
+  <!-- COCOA MODAL & WARMTH NOTE -->
+  <div id="cocoaModal" class="cocoa-modal hidden" onclick="if(event.target===this)closeWarmth()">
+    <div class="cocoa-modal-card">
+      <div class="cocoa-steam-anim">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="cocoa-modal-emoji">☕✨</div>
+      <h3 class="cocoa-modal-title">A Cup of Warmth</h3>
+      <p class="cocoa-modal-quote">"Sending you a warm cup of coffe across the miles... May the cold winter distance
+        melt away, and may every moment wrap you in comfort, sweetness, and peace." 🤍</p>
+      <div class="cocoa-modal-tagline">— Made with warmth, just for Zubeariya 🌟</div>
+      <button class="cocoa-modal-btn" onclick="closeWarmth()">Hold the Warmth 💜</button>
+    </div>
+  </div>
 
   <!-- AIRPLANE -->
   <div class="airplane-flight">
@@ -2061,7 +2342,7 @@
       <span class="hero-star">🌙</span>
       <p class="hero-eyebrow">— A quiet story, written only for you —</p>
       <h1 class="hero-title">A Story Just For You</h1>
-      <p class="hero-subtitle">This one's for you,&nbsp;<span class="hero-name">Zubeariya</span>&nbsp;💜</p>
+      <p class="hero-subtitle">This one's for you,&nbsp;<span class="hero-name">Zubeariya</span>&nbsp;🤎</p>
       <button class="begin-btn" id="begin-btn" onclick="startStory()">🌙 Begin our Story 🌙</button>
     </div>
     <div class="scroll-hint">
@@ -2263,6 +2544,8 @@
     </div>
   </section>
 
+  <div id="cursor">🌙</div>
+
   <script>
     /* ─── ENCRYPTED CONTENT ─── */
     const ENCRYPTED_CONTENT = {
@@ -2343,7 +2626,7 @@
 
           // Check if this line visually starts a quote block
           let isQuoteStart = t.match(/^["“”']/) || t.startsWith('--') || t.startsWith('—');
-          
+
           if (isQuoteStart && currBlockType !== 'quote') {
             if (currContent.length > 0) {
               blocks.push({ type: currBlockType, text: currContent.join('<br>') });
@@ -2351,7 +2634,7 @@
             }
             currBlockType = 'quote';
           }
-          
+
           currContent.push(t);
 
           // Check if the quote completes neatly on this line
@@ -2361,7 +2644,7 @@
             currBlockType = 'text';
           }
         }
-        
+
         if (currContent.length > 0) {
           blocks.push({ type: currBlockType, text: currContent.join('<br>') });
         }
@@ -2419,14 +2702,14 @@
         injectContent(data);
 
         const today = new Date();
-        const isDec29 = today.getMonth() === 11 && today.getDate() === 29;
-        if (!isDec29) {
-          // Always find the NEXT December 29th in the yearly loop
+        // Birthday is December 29th (Midnight 12:00 AM)
+        const isDec29OrLater = (today.getMonth() === 11 && today.getDate() >= 29);
+        if (!isDec29OrLater) {
+          // Always calculate the exact target: Dec 29 at 00:00:00 (12:00 AM)
           const now = new Date();
           let targetYear = now.getFullYear();
-          const thisDec29 = new Date(targetYear, 11, 29, 0, 0, 0).getTime();
-          if (Date.now() >= thisDec29) {
-            // Dec 29 of this year has already passed (or it's Dec 30/31), go to next year
+          const thisYearBday = new Date(targetYear, 11, 29, 0, 0, 0).getTime();
+          if (Date.now() >= thisYearBday) {
             targetYear++;
           }
           const bdayDate = new Date(targetYear, 11, 29, 0, 0, 0).getTime();
@@ -2435,6 +2718,7 @@
           document.getElementById('countdownScreen').classList.remove('hidden');
           document.body.style.overflowY = 'hidden'; // Lock scroll during countdown
           document.getElementById('musicToggle').classList.add('visible');
+          document.getElementById('cocoaToggle')?.classList.add('visible');
           startCountdown(bdayDate);
           return;
         }
@@ -2445,7 +2729,8 @@
         document.getElementById('lockScreen').classList.add('hidden');
         setTimeout(() => document.getElementById('lockScreen').remove(), 950);
         document.getElementById('musicToggle').classList.add('visible');
-        document.body.style.overflowY = 'auto'; // Restore scroll because they can see the story now
+        document.getElementById('cocoaToggle')?.classList.add('visible');
+        revealStoryPresent(false);
       } catch (e) {
         bgm.pause();
         inp.classList.remove('wrong'); void inp.offsetWidth; inp.classList.add('wrong');
@@ -2463,6 +2748,101 @@
       else { bgm.pause(); btn.textContent = '🔇'; }
     }
 
+    /* ─── WARMTH / COCOA FEATURE ─── */
+    function playWarmChime() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 (warm, uplifting chime)
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.08);
+          gain.gain.setValueAtTime(0, ctx.currentTime + idx * 0.08);
+          gain.gain.linearRampToValueAtTime(0.09, ctx.currentTime + idx * 0.08 + 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + idx * 0.08 + 1.25);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.08);
+          osc.stop(ctx.currentTime + idx * 0.08 + 1.3);
+        });
+      } catch (e) { }
+    }
+
+    function triggerWarmth() {
+      playWarmChime();
+      const overlay = document.getElementById('warmthPulseOverlay');
+      if (overlay) {
+        overlay.classList.add('pulsing');
+        setTimeout(() => overlay.classList.remove('pulsing'), 2600);
+      }
+      const modal = document.getElementById('cocoaModal');
+      if (modal) modal.classList.remove('hidden');
+
+      // Floating golden embers rising from the cocoa mug
+      for (let i = 0; i < 22; i++) {
+        const ember = document.createElement('div');
+        const startX = 25 + Math.random() * 55;
+        const startY = window.innerHeight - 30 - Math.random() * 40;
+        const endX = startX + (Math.random() - 0.5) * 220;
+        const endY = startY - 140 - Math.random() * 260;
+        const sz = Math.random() * 5 + 3;
+        ember.style.cssText = `position:fixed;left:${startX}px;top:${startY}px;width:${sz}px;height:${sz}px;border-radius:50%;background:rgba(255,${Math.floor(Math.random() * 70 + 175)},50,0.9);box-shadow:0 0 12px rgba(255,160,40,0.85);pointer-events:none;z-index:999998;transition:transform 2.2s cubic-bezier(.1,.8,.2,1),opacity 2.2s ease;`;
+        document.body.appendChild(ember);
+        requestAnimationFrame(() => {
+          ember.style.transform = `translate(${endX - startX}px, ${endY - startY}px) scale(0)`;
+          ember.style.opacity = '0';
+        });
+        setTimeout(() => ember.remove(), 2300);
+      }
+    }
+
+    function closeWarmth() {
+      const modal = document.getElementById('cocoaModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    /* ─── STORY REVEAL TRANSITION ─── */
+    let storyRevealed = false;
+    function revealStoryPresent(withConfetti = true) {
+      if (storyRevealed) return;
+      storyRevealed = true;
+
+      // Unlock scrolling smoothly
+      document.body.style.overflowY = 'auto';
+
+      // Ensure music & controls are active
+      const bgm = document.getElementById('bgMusic');
+      if (bgm && bgm.paused) {
+        bgm.volume = 0.4;
+        bgm.play().catch(() => { });
+        const mBtn = document.getElementById('musicToggle');
+        if (mBtn) mBtn.textContent = '🎵';
+      }
+      document.getElementById('musicToggle')?.classList.add('visible');
+      document.getElementById('cocoaToggle')?.classList.add('visible');
+
+      // Make sure user begins at the top hero section
+      window.scrollTo({ top: 0, behavior: 'instant' });
+
+      // Animate all chapter sections and story elements into view
+      document.querySelectorAll('[data-reveal]').forEach((el, index) => {
+        setTimeout(() => {
+          el.classList.add('revealed');
+        }, 150 + index * 60);
+      });
+
+      // Celebration confetti & chime
+      if (withConfetti) {
+        setTimeout(() => {
+          playWarmChime();
+          if (typeof launchConfetti === 'function') launchConfetti();
+        }, 600);
+      }
+    }
+
     /* ─── COUNTDOWN ─── */
     let countdownInterval;
     function startCountdown(targetTime) {
@@ -2470,26 +2850,47 @@
         const distance = targetTime - Date.now();
         if (distance <= 0) {
           clearInterval(countdownInterval);
+          // Set timer display neatly to zero
+          const dEl = document.getElementById('cd-days');
+          const hEl = document.getElementById('cd-hours');
+          const mEl = document.getElementById('cd-mins');
+          const sEl = document.getElementById('cd-secs');
+          if (dEl) dEl.textContent = '00';
+          if (hEl) hEl.textContent = '00';
+          if (mEl) mEl.textContent = '00';
+          if (sEl) sEl.textContent = '00';
+
           const cd = document.getElementById('countdownScreen');
           if (cd) {
+            // Initiate the silky smooth fadeout
             cd.classList.add('hidden');
             setTimeout(() => {
-              cd.remove();
-              // ✨ Dec 29 has arrived! Auto-reveal the story
-              document.body.style.overflowY = 'auto';
-              document.querySelectorAll('[data-reveal]').forEach(el => el.classList.add('revealed'));
-              // Trigger confetti burst to celebrate
-              setTimeout(() => launchConfetti(), 800);
-            }, 950);
+              try { cd.remove(); } catch (e) { }
+              // Automatically reveal the entire story perfectly!
+              revealStoryPresent(true);
+            }, 2400);
+          } else {
+            revealStoryPresent(true);
           }
           return;
         }
-        document.getElementById('cd-days').textContent = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, '0');
-        document.getElementById('cd-hours').textContent = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
-        document.getElementById('cd-mins').textContent = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
-        document.getElementById('cd-secs').textContent = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((distance % (1000 * 60)) / 1000);
+
+        const dEl = document.getElementById('cd-days');
+        const hEl = document.getElementById('cd-hours');
+        const mEl = document.getElementById('cd-mins');
+        const sEl = document.getElementById('cd-secs');
+        if (dEl) dEl.textContent = String(days).padStart(2, '0');
+        if (hEl) hEl.textContent = String(hours).padStart(2, '0');
+        if (mEl) mEl.textContent = String(mins).padStart(2, '0');
+        if (sEl) sEl.textContent = String(secs).padStart(2, '0');
       }
-      update(); countdownInterval = setInterval(update, 1000);
+      update();
+      countdownInterval = setInterval(update, 1000);
     }
 
     /* ─── BYPASS ─── */
@@ -2515,6 +2916,7 @@
       const container = document.getElementById('shatterContainer');
       const screen = document.getElementById('countdownScreen');
       clearInterval(countdownInterval);
+
       for (let i = 0; i < 40; i++) {
         const shard = document.createElement('div');
         shard.className = 'glass-shard';
@@ -2529,13 +2931,21 @@
         const tx = Math.cos(angle) * dist, ty = Math.sin(angle) * dist, rot = Math.random() * 720 - 360;
         requestAnimationFrame(() => { shard.style.transform = `translate(${tx}px,${ty}px) rotate(${rot}deg) scale(0)`; shard.style.opacity = '0'; });
       }
-      setTimeout(() => { screen.style.transition = 'opacity 2.5s ease'; screen.style.opacity = '0'; }, 500);
-      setTimeout(() => {
-        screen.remove(); container.remove();
-        document.body.style.overflowY = 'auto'; // Restore scroll after bypass
 
-        document.getElementById('musicToggle').classList.add('visible');
-      }, 3000);
+      // Smoothly fade out screen in tandem with glass shards
+      setTimeout(() => {
+        if (screen) {
+          screen.style.transition = 'opacity 2.4s cubic-bezier(0.25, 1, 0.5, 1)';
+          screen.style.opacity = '0';
+        }
+      }, 400);
+
+      setTimeout(() => {
+        if (screen) screen.remove();
+        if (container) container.remove();
+        // Perfectly reveal the story with celebratory confetti!
+        revealStoryPresent(true);
+      }, 2600);
     }
 
     /* ─── LOADER ─── */
@@ -2567,7 +2977,780 @@
 
     /* ─── CURSOR ─── */
     const cursor = document.getElementById('cursor');
-    document.addEventListener('mousemove', e => { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; });
+    if (cursor) {
+      window.addEventListener('mousemove', e => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+        cursor.style.opacity = '1';
+      }, { passive: true });
+
+      document.addEventListener('mouseleave', () => {
+        cursor.style.opacity = '0';
+      });
+
+      document.addEventListener('mouseenter', () => {
+        cursor.style.opacity = '1';
+      });
+
+      window.addEventListener('mousedown', () => {
+        cursor.classList.add('active');
+      });
+
+      window.addEventListener('mouseup', () => {
+        cursor.classList.remove('active');
+      });
+
+      document.addEventListener('mouseover', e => {
+        if (e.target && e.target.closest && e.target.closest('button, input, textarea, a, .chapter-card, .celebrate-btn, .begin-btn, .cocoa-modal-btn, [onclick]')) {
+          cursor.classList.add('active');
+        } else {
+          cursor.classList.remove('active');
+        }
+      });
+    }
+
+    /* ─── SNOW ENGINE — December Night Scene ─── */
+    (function () {
+      const snowBgCanvas = document.getElementById('snow-bg-canvas');
+      const snowCanvas = document.getElementById('snow-canvas');
+      const bgCtx = snowBgCanvas.getContext('2d');
+      const sCtx = snowCanvas.getContext('2d');
+      let SW, SH;
+
+      /* ── Scroll slow-down ─────────────────────────────── */
+      let scrollFactor = 1.0, lastSY = window.scrollY, scrollTimer;
+      window.addEventListener('scroll', () => {
+        const dy = Math.abs(window.scrollY - lastSY);
+        lastSY = window.scrollY;
+        // Slow down fall during scrolling for peaceful motion without jitter
+        scrollFactor = Math.max(0.24, 1 - dy * 0.046);
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(() => { scrollFactor = 1.0; }, 260);
+      }, { passive: true });
+
+      /* ── Flake layer configs (Mobile: ~42 flakes | Desktop: ~91 flakes) ──
+         Far: tiny micro-drift | Mid: soft glowing flakes | Near: crisp crystals */
+      function getLayerConfigs() {
+        const isMobile = (window.innerWidth || SW || 800) < 768;
+        return [
+          { n: isMobile ? 18 : 36, rMin: 0.40, rMax: 1.10, vyMin: 0.15, vyMax: 0.40, opBase: 0.28 }, // distant haze
+          { n: isMobile ? 16 : 38, rMin: 1.10, rMax: 2.50, vyMin: 0.35, vyMax: 0.78, opBase: 0.55 }, // mid drift
+          { n: isMobile ? 8 : 17, rMin: 2.50, rMax: 4.80, vyMin: 0.65, vyMax: 1.25, opBase: 0.85 }, // near crystals
+        ];
+      }
+      const flakes = [];
+
+      function makeFlake(cfg, y) {
+        const r = cfg.rMin + Math.random() * (cfg.rMax - cfg.rMin);
+        return {
+          x: Math.random() * SW,
+          y: (y != null) ? y : Math.random() * SH,
+          r,
+          vy: cfg.vyMin + Math.random() * (cfg.vyMax - cfg.vyMin),
+          vx: (Math.random() - 0.5) * 0.20,
+          sway: Math.random() * Math.PI * 2,
+          swaySpd: 0.007 + Math.random() * 0.012,
+          swayAmp: 0.20 + Math.random() * 0.65,
+          op: cfg.opBase * (0.70 + Math.random() * 0.30),
+          crystal: r > 3.2 && Math.random() > 0.48,
+          rot: Math.random() * Math.PI,
+          rotSpd: (Math.random() - 0.5) * 0.014,
+          cfg,
+        };
+      }
+
+      /* ── 6-arm crystal snowflake ─────────────────────── */
+      function drawCrystal(f) {
+        sCtx.save();
+        sCtx.translate(f.x, f.y);
+        sCtx.rotate(f.rot);
+        sCtx.globalAlpha = f.op;
+        sCtx.strokeStyle = 'rgba(230, 244, 255, 0.95)';
+        sCtx.lineWidth = Math.max(0.6, f.r * 0.20);
+        sCtx.lineCap = 'round';
+        const L = f.r * 2.8;
+        for (let a = 0; a < 6; a++) {
+          sCtx.rotate(Math.PI / 3);
+          sCtx.beginPath(); sCtx.moveTo(0, 0); sCtx.lineTo(0, L); sCtx.stroke();
+          // inner chevron
+          sCtx.beginPath(); sCtx.moveTo(0, L * 0.40); sCtx.lineTo(L * 0.26, L * 0.58); sCtx.stroke();
+          sCtx.beginPath(); sCtx.moveTo(0, L * 0.40); sCtx.lineTo(-L * 0.26, L * 0.58); sCtx.stroke();
+          // outer chevron
+          sCtx.beginPath(); sCtx.moveTo(0, L * 0.72); sCtx.lineTo(L * 0.20, L * 0.86); sCtx.stroke();
+          sCtx.beginPath(); sCtx.moveTo(0, L * 0.72); sCtx.lineTo(-L * 0.20, L * 0.86); sCtx.stroke();
+        }
+        // central nucleus
+        sCtx.beginPath(); sCtx.arc(0, 0, f.r * 0.38, 0, Math.PI * 2);
+        sCtx.fillStyle = 'rgba(245, 252, 255, 0.95)'; sCtx.fill();
+        sCtx.restore();
+      }
+
+      /* ── Soft round snowflake with radial glow ───────── */
+      function drawRound(f) {
+        if (f.r > 1.6) {
+          const g = sCtx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.r * 3.8);
+          g.addColorStop(0, `rgba(215, 238, 255, ${f.op * 0.45})`);
+          g.addColorStop(1, 'rgba(0, 0, 0, 0)');
+          sCtx.beginPath(); sCtx.arc(f.x, f.y, f.r * 3.8, 0, Math.PI * 2);
+          sCtx.fillStyle = g; sCtx.fill();
+        }
+        sCtx.beginPath(); sCtx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        sCtx.fillStyle = `rgba(238, 248, 255, ${f.op})`; sCtx.fill();
+      }
+
+      /* ═════════════════════════════════════════════════════
+         WINTER SCENERY (Rendered cleanly on snow-bg-canvas)
+         ═════════════════════════════════════════════════════ */
+      let sceneCacheDirty = true;
+      let sparkleTime = 0;
+
+      /* ── Natural Pine Tree with Soft Snow Boughs ──────── */
+      function drawOrganicPine(ctx, cx, h, alpha, isForeground) {
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        const baseY = SH;
+        const trunkW = h * 0.07;
+        const trunkH = h * 0.22;
+
+        // Trunk
+        const trunkGrad = ctx.createLinearGradient(cx - trunkW / 2, 0, cx + trunkW / 2, 0);
+        trunkGrad.addColorStop(0, '#1c120c');
+        trunkGrad.addColorStop(0.5, '#322016');
+        trunkGrad.addColorStop(1, '#1c120c');
+        ctx.fillStyle = trunkGrad;
+        ctx.fillRect(cx - trunkW / 2, baseY - trunkH, trunkW, trunkH);
+
+        // Foliage tiers (4 natural tiers)
+        const tiers = 4;
+        const startY = baseY - trunkH + h * 0.05;
+        const totalFoliageH = h * 0.85;
+
+        for (let t = 0; t < tiers; t++) {
+          const tierProgress = t / (tiers - 1); // 0 at bottom, 1 at top
+          const tierBottom = startY - (t * (totalFoliageH / tiers) * 0.82);
+          const tierH = (totalFoliageH / tiers) * 1.35;
+          const tierW = (h * 0.52) * (1 - tierProgress * 0.55);
+
+          // Dark winter pine needles
+          ctx.beginPath();
+          ctx.moveTo(cx, tierBottom - tierH);
+          ctx.quadraticCurveTo(cx + tierW * 0.35, tierBottom - tierH * 0.45, cx + tierW * 0.52, tierBottom);
+          ctx.quadraticCurveTo(cx, tierBottom - tierH * 0.15, cx - tierW * 0.52, tierBottom);
+          ctx.quadraticCurveTo(cx - tierW * 0.35, tierBottom - tierH * 0.45, cx, tierBottom - tierH);
+          ctx.closePath();
+
+          const pineGrad = ctx.createLinearGradient(cx, tierBottom - tierH, cx, tierBottom);
+          pineGrad.addColorStop(0, '#102f22');
+          pineGrad.addColorStop(0.65, '#0b2319');
+          pineGrad.addColorStop(1, '#061610');
+          ctx.fillStyle = pineGrad;
+          ctx.fill();
+
+          // Soft powdery snow pillow atop the boughs
+          ctx.beginPath();
+          ctx.moveTo(cx, tierBottom - tierH - 2);
+          ctx.quadraticCurveTo(cx + tierW * 0.26, tierBottom - tierH * 0.40, cx + tierW * 0.44, tierBottom - tierH * 0.22);
+          ctx.quadraticCurveTo(cx + tierW * 0.20, tierBottom - tierH * 0.05, cx, tierBottom - tierH * 0.12);
+          ctx.quadraticCurveTo(cx - tierW * 0.20, tierBottom - tierH * 0.05, cx - tierW * 0.44, tierBottom - tierH * 0.22);
+          ctx.quadraticCurveTo(cx - tierW * 0.26, tierBottom - tierH * 0.40, cx, tierBottom - tierH - 2);
+          ctx.closePath();
+
+          const snowGrad = ctx.createLinearGradient(cx, tierBottom - tierH, cx, tierBottom - tierH * 0.10);
+          snowGrad.addColorStop(0, 'rgba(246, 252, 255, 0.95)');
+          snowGrad.addColorStop(0.65, 'rgba(212, 235, 255, 0.85)');
+          snowGrad.addColorStop(1, 'rgba(165, 195, 232, 0.55)');
+          ctx.fillStyle = snowGrad;
+          ctx.fill();
+
+          // Delicate moonlight rim highlight
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.40)';
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+
+        // Tiny fairy lights on foreground trees
+        if (isForeground) {
+          const lightColors = ['#ffd166', '#ef476f', '#06d6a0', '#118ab2', '#c77dff'];
+          for (let l = 0; l < 5; l++) {
+            const lx = cx + Math.sin(l * 2.3 + cx) * (h * 0.16);
+            const ly = baseY - trunkH - (l * (totalFoliageH / 5.5));
+            const col = lightColors[l % lightColors.length];
+            // Glow halo
+            const lg = ctx.createRadialGradient(lx, ly, 0, lx, ly, 7);
+            lg.addColorStop(0, col);
+            lg.addColorStop(0.4, col);
+            lg.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.beginPath(); ctx.arc(lx, ly, 7, 0, Math.PI * 2);
+            ctx.fillStyle = lg; ctx.fill();
+            // Core
+            ctx.beginPath(); ctx.arc(lx, ly, 1.6, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff'; ctx.fill();
+          }
+        }
+
+        ctx.restore();
+      }
+
+      /* ── Realistic, Cute Snowman ─────────────────────── */
+      function drawSnowman(ctx, cx, by, s) {
+        ctx.save();
+
+        /* Ambient ground shadow */
+        ctx.beginPath();
+        ctx.ellipse(cx + 4 * s, by + 2 * s, 34 * s, 7.5 * s, 0, 0, Math.PI * 2);
+        const shadowGrad = ctx.createRadialGradient(cx + 4 * s, by + 2 * s, 0, cx + 4 * s, by + 2 * s, 34 * s);
+        shadowGrad.addColorStop(0, 'rgba(18, 10, 38, 0.45)');
+        shadowGrad.addColorStop(0.6, 'rgba(20, 12, 42, 0.20)');
+        shadowGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = shadowGrad;
+        ctx.fill();
+
+        /* 1. Bottom Snowball */
+        const bRad = 26 * s;
+        const bCy = by - bRad + 2 * s;
+        ctx.beginPath();
+        ctx.arc(cx, bCy, bRad, 0, Math.PI * 2);
+        let bGrad = ctx.createRadialGradient(cx - 8 * s, bCy - 10 * s, 2 * s, cx + 5 * s, bCy + 5 * s, bRad * 1.15);
+        bGrad.addColorStop(0, '#ffffff');
+        bGrad.addColorStop(0.45, '#e4effa');
+        bGrad.addColorStop(0.80, '#b8d2eb');
+        bGrad.addColorStop(1, '#8eaecf');
+        ctx.fillStyle = bGrad;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(175, 205, 235, 0.40)'; ctx.lineWidth = 0.8 * s; ctx.stroke();
+
+        /* 2. Middle Snowball */
+        const mRad = 19 * s;
+        const mCy = bCy - bRad * 0.78 - mRad * 0.72;
+        ctx.beginPath();
+        ctx.arc(cx, mCy, mRad, 0, Math.PI * 2);
+        let mGrad = ctx.createRadialGradient(cx - 6 * s, mCy - 8 * s, 2 * s, cx + 4 * s, mCy + 4 * s, mRad * 1.15);
+        mGrad.addColorStop(0, '#ffffff');
+        mGrad.addColorStop(0.48, '#e6f1fb');
+        mGrad.addColorStop(0.82, '#bcd5ec');
+        mGrad.addColorStop(1, '#92b2d3');
+        ctx.fillStyle = mGrad;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(175, 205, 235, 0.35)'; ctx.lineWidth = 0.7 * s; ctx.stroke();
+
+        /* Body Buttons (Coal) */
+        ctx.fillStyle = '#222230';
+        for (let i = 0; i < 3; i++) {
+          const btnY = mCy - 5 * s + i * 8.5 * s;
+          ctx.beginPath();
+          ctx.arc(cx - 0.5 * s, btnY, 2.0 * s, 0, Math.PI * 2);
+          ctx.fill();
+          // Coal highlight
+          ctx.fillStyle = 'rgba(255,255,255,0.4)';
+          ctx.beginPath(); ctx.arc(cx - 1.2 * s, btnY - 0.8 * s, 0.65 * s, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#222230';
+        }
+
+        /* 3. Stick Arms & Warm Lantern */
+        ctx.strokeStyle = '#4e331c';
+        ctx.lineWidth = 2.2 * s;
+        ctx.lineCap = 'round';
+
+        // Right arm
+        ctx.beginPath();
+        ctx.moveTo(cx + mRad * 0.82, mCy - 2 * s);
+        ctx.quadraticCurveTo(cx + mRad * 1.6, mCy - 12 * s, cx + mRad * 2.2, mCy - 10 * s);
+        ctx.stroke();
+        // Right twigs
+        ctx.beginPath();
+        ctx.moveTo(cx + mRad * 1.7, mCy - 10 * s);
+        ctx.lineTo(cx + mRad * 2.1, mCy - 18 * s);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(cx + mRad * 1.9, mCy - 11 * s);
+        ctx.lineTo(cx + mRad * 2.3, mCy - 6 * s);
+        ctx.stroke();
+
+        // Left arm (holding vintage lantern)
+        const lanternHandX = cx - mRad * 2.1;
+        const lanternHandY = mCy - 4 * s;
+        ctx.beginPath();
+        ctx.moveTo(cx - mRad * 0.82, mCy - 2 * s);
+        ctx.quadraticCurveTo(cx - mRad * 1.5, mCy - 10 * s, lanternHandX, lanternHandY);
+        ctx.stroke();
+        // Left twigs
+        ctx.beginPath();
+        ctx.moveTo(cx - mRad * 1.6, mCy - 8 * s);
+        ctx.lineTo(cx - mRad * 1.9, mCy - 15 * s);
+        ctx.stroke();
+
+        // ── Hanging Lantern with Warm Glow ──
+        const lX = lanternHandX - 2 * s;
+        const lY = lanternHandY + 14 * s;
+        // Cord
+        ctx.strokeStyle = '#321d10'; ctx.lineWidth = 1.0 * s;
+        ctx.beginPath(); ctx.moveTo(lanternHandX, lanternHandY); ctx.lineTo(lX, lY - 6 * s); ctx.stroke();
+        // Warm candlelight ambient glow
+        const lanternGlow = ctx.createRadialGradient(lX, lY, 1 * s, lX, lY, 32 * s);
+        lanternGlow.addColorStop(0, 'rgba(255, 210, 100, 0.45)');
+        lanternGlow.addColorStop(0.35, 'rgba(255, 170, 50, 0.22)');
+        lanternGlow.addColorStop(0.70, 'rgba(255, 120, 20, 0.08)');
+        lanternGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.beginPath(); ctx.arc(lX, lY, 32 * s, 0, Math.PI * 2);
+        ctx.fillStyle = lanternGlow; ctx.fill();
+        // Lantern cap
+        ctx.fillStyle = '#1c1c24';
+        ctx.beginPath();
+        ctx.moveTo(lX - 4.5 * s, lY - 4 * s); ctx.lineTo(lX, lY - 7 * s); ctx.lineTo(lX + 4.5 * s, lY - 4 * s);
+        ctx.closePath(); ctx.fill();
+        // Lantern glass (golden light)
+        ctx.fillStyle = '#ffeaa7';
+        ctx.fillRect(lX - 3.5 * s, lY - 4 * s, 7 * s, 8 * s);
+        // Lantern bottom
+        ctx.fillStyle = '#1c1c24';
+        ctx.fillRect(lX - 4.5 * s, lY + 4 * s, 9 * s, 2 * s);
+
+        /* 4. Head */
+        const hRad = 14.5 * s;
+        const hCy = mCy - mRad * 0.78 - hRad * 0.74;
+        ctx.beginPath();
+        ctx.arc(cx, hCy, hRad, 0, Math.PI * 2);
+        let hGrad = ctx.createRadialGradient(cx - 5 * s, hCy - 6 * s, 1.5 * s, cx + 3 * s, hCy + 3 * s, hRad * 1.15);
+        hGrad.addColorStop(0, '#ffffff');
+        hGrad.addColorStop(0.50, '#e8f3fc');
+        hGrad.addColorStop(0.84, '#bfd8ee');
+        hGrad.addColorStop(1, '#97b7d6');
+        ctx.fillStyle = hGrad;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(175, 205, 235, 0.35)'; ctx.lineWidth = 0.65 * s; ctx.stroke();
+
+        /* Rosy Cheeks */
+        ctx.fillStyle = 'rgba(255, 140, 165, 0.30)';
+        ctx.beginPath(); ctx.ellipse(cx - 6.5 * s, hCy + 3 * s, 3.0 * s, 1.8 * s, -0.1, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(cx + 6.5 * s, hCy + 3 * s, 3.0 * s, 1.8 * s, 0.1, 0, Math.PI * 2); ctx.fill();
+
+        /* Coal Eyes */
+        ctx.fillStyle = '#1e1c28';
+        ctx.beginPath(); ctx.arc(cx - 4.2 * s, hCy - 2.5 * s, 1.85 * s, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(cx + 4.2 * s, hCy - 2.5 * s, 1.85 * s, 0, Math.PI * 2); ctx.fill();
+        // Eye catchlights
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+        ctx.beginPath(); ctx.arc(cx - 4.8 * s, hCy - 3.2 * s, 0.65 * s, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(cx + 3.6 * s, hCy - 3.2 * s, 0.65 * s, 0, Math.PI * 2); ctx.fill();
+
+        /* Carrot Nose (3D taper with ridge detail) */
+        ctx.beginPath();
+        ctx.moveTo(cx - 0.5 * s, hCy + 0.5 * s);
+        ctx.quadraticCurveTo(cx + 6 * s, hCy + 0.8 * s, cx + 13 * s, hCy + 2.8 * s);
+        ctx.quadraticCurveTo(cx + 5 * s, hCy + 3.8 * s, cx - 0.5 * s, hCy + 3.0 * s);
+        ctx.closePath();
+        const carrotGrad = ctx.createLinearGradient(cx, hCy + 0.5 * s, cx + 13 * s, hCy + 2.8 * s);
+        carrotGrad.addColorStop(0, '#ff7a00');
+        carrotGrad.addColorStop(0.65, '#e65c00');
+        carrotGrad.addColorStop(1, '#b83e00');
+        ctx.fillStyle = carrotGrad;
+        ctx.fill();
+
+        /* Smile (delicate coal dots) */
+        ctx.fillStyle = '#222230';
+        for (let i = 0; i < 5; i++) {
+          const ang = 0.35 + i * (Math.PI - 0.70) / 4;
+          const sx = cx + Math.cos(ang) * 6.2 * s;
+          const sy = hCy + 3.2 * s + Math.sin(ang) * 4.6 * s;
+          ctx.beginPath(); ctx.arc(sx, sy, 0.85 * s, 0, Math.PI * 2); ctx.fill();
+        }
+
+        /* 5. Cozy Knitted Scarf (Accurately Wrapped at the Neck!) */
+        const neckY = hCy + hRad * 0.78;
+        // Main scarf wrap around neck
+        ctx.beginPath();
+        ctx.roundRect ? ctx.roundRect(cx - 13 * s, neckY - 2.5 * s, 26 * s, 7.5 * s, 3.5 * s) : ctx.rect(cx - 13 * s, neckY - 2.5 * s, 26 * s, 7.5 * s);
+        const scarfGrad = ctx.createLinearGradient(cx - 13 * s, 0, cx + 13 * s, 0);
+        scarfGrad.addColorStop(0, '#8e0e24');
+        scarfGrad.addColorStop(0.5, '#c41b3a');
+        scarfGrad.addColorStop(1, '#8e0e24');
+        ctx.fillStyle = scarfGrad;
+        ctx.fill();
+        // Scarf stripe pattern
+        ctx.fillStyle = 'rgba(255, 235, 240, 0.65)';
+        for (let st = -9; st <= 9; st += 4.5) {
+          ctx.fillRect(cx + st * s, neckY - 2.5 * s, 1.2 * s, 7.5 * s);
+        }
+
+        // Draped scarf tails flowing downward
+        ctx.beginPath();
+        ctx.moveTo(cx + 4 * s, neckY + 4 * s);
+        ctx.quadraticCurveTo(cx + 9 * s, neckY + 14 * s, cx + 8 * s, neckY + 24 * s);
+        ctx.lineTo(cx + 14 * s, neckY + 23 * s);
+        ctx.quadraticCurveTo(cx + 14 * s, neckY + 12 * s, cx + 10 * s, neckY + 4 * s);
+        ctx.closePath();
+        ctx.fillStyle = '#b51634';
+        ctx.fill();
+        // Tail stripe
+        ctx.strokeStyle = 'rgba(255, 235, 240, 0.65)';
+        ctx.lineWidth = 1.4 * s;
+        ctx.beginPath();
+        ctx.moveTo(cx + 6 * s, neckY + 18 * s); ctx.lineTo(cx + 13 * s, neckY + 17 * s); ctx.stroke();
+        // Fringe tassels at tail tip
+        ctx.strokeStyle = '#f8e8ea';
+        ctx.lineWidth = 0.9 * s;
+        for (let f = 0; f < 4; f++) {
+          ctx.beginPath();
+          ctx.moveTo(cx + (8.5 + f * 1.5) * s, neckY + 23.5 * s);
+          ctx.lineTo(cx + (8.2 + f * 1.5) * s, neckY + 27.5 * s);
+          ctx.stroke();
+        }
+
+        /* 6. Winter Top Hat */
+        const hatBrimY = hCy - hRad * 0.88;
+        // Brim
+        ctx.beginPath();
+        ctx.ellipse(cx, hatBrimY, 17 * s, 4.2 * s, -0.05, 0, Math.PI * 2);
+        ctx.fillStyle = '#161222';
+        ctx.fill();
+        ctx.strokeStyle = '#2b233e'; ctx.lineWidth = 0.7 * s; ctx.stroke();
+
+        // Crown
+        const crownW = 19 * s;
+        const crownH = 16 * s;
+        const crownX = cx - crownW / 2;
+        const crownY = hatBrimY - crownH;
+        ctx.fillStyle = '#161222';
+        ctx.beginPath();
+        ctx.roundRect ? ctx.roundRect(crownX, crownY, crownW, crownH, [3 * s, 3 * s, 0, 0]) : ctx.rect(crownX, crownY, crownW, crownH);
+        ctx.fill();
+
+        // Purple Velvet Band (matching site accent)
+        ctx.fillStyle = '#9400cc';
+        ctx.fillRect(crownX, hatBrimY - 4.5 * s, crownW, 4.2 * s);
+        // Golden band buckle
+        ctx.fillStyle = '#ffd166';
+        ctx.fillRect(cx - 2.2 * s, hatBrimY - 4.2 * s, 4.4 * s, 3.6 * s);
+        ctx.fillStyle = '#9400cc';
+        ctx.fillRect(cx - 1.2 * s, hatBrimY - 3.4 * s, 2.4 * s, 2.0 * s);
+
+        // Powdery fresh snow on hat brim & crown
+        ctx.fillStyle = 'rgba(245, 252, 255, 0.95)';
+        ctx.beginPath();
+        ctx.ellipse(cx - 2 * s, crownY, 8 * s, 2.2 * s, -0.05, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(cx + 7 * s, hatBrimY - 1 * s, 4 * s, 1.4 * s, 0.1, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+
+      /* ── Realistic Igloo (near left of snowman) ───────── */
+      function drawIgloo(ctx, cx, by, s) {
+        ctx.save();
+
+        const domeW = 54 * s;
+        const domeH = 34 * s;
+
+        /* 1. Ambient ground shadow */
+        ctx.beginPath();
+        ctx.ellipse(cx, by + 3 * s, domeW * 0.75, 8 * s, 0, 0, Math.PI * 2);
+        const gShadow = ctx.createRadialGradient(cx, by + 3 * s, 0, cx, by + 3 * s, domeW * 0.75);
+        gShadow.addColorStop(0, 'rgba(18, 10, 38, 0.45)');
+        gShadow.addColorStop(0.6, 'rgba(20, 12, 42, 0.18)');
+        gShadow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = gShadow;
+        ctx.fill();
+
+        /* 2. Main Igloo Dome */
+        ctx.beginPath();
+        ctx.moveTo(cx - domeW * 0.52, by);
+        ctx.bezierCurveTo(cx - domeW * 0.52, by - domeH * 0.85, cx - domeW * 0.28, by - domeH * 1.05, cx, by - domeH * 1.05);
+        ctx.bezierCurveTo(cx + domeW * 0.28, by - domeH * 1.05, cx + domeW * 0.52, by - domeH * 0.85, cx + domeW * 0.52, by);
+        ctx.closePath();
+
+        const domeGrad = ctx.createRadialGradient(cx - domeW * 0.18, by - domeH * 0.75, 4 * s, cx + domeW * 0.15, by - domeH * 0.15, domeW * 0.70);
+        domeGrad.addColorStop(0, '#ffffff');
+        domeGrad.addColorStop(0.38, '#e6f2fc');
+        domeGrad.addColorStop(0.72, '#bad6ee');
+        domeGrad.addColorStop(1, '#81a7cc');
+        ctx.fillStyle = domeGrad;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(165, 198, 230, 0.40)';
+        ctx.lineWidth = 0.8 * s;
+        ctx.stroke();
+
+        /* 3. Carved Ice Block Seam Lines (Masonry Rows) */
+        ctx.strokeStyle = 'rgba(125, 165, 205, 0.42)';
+        ctx.lineWidth = 0.75 * s;
+
+        // Horizontal block curves (3 concentric rows)
+        const rows = [0.30, 0.58, 0.82];
+        rows.forEach(r => {
+          const ry = by - domeH * r;
+          const rx = (domeW * 0.50) * Math.sqrt(Math.max(0, 1 - Math.pow((r - 0.1), 2)));
+          ctx.beginPath();
+          ctx.moveTo(cx - rx, ry);
+          ctx.quadraticCurveTo(cx, ry + 4.5 * s, cx + rx, ry);
+          ctx.stroke();
+        });
+
+        // Staggered vertical seams
+        const seams = [
+          // Row 1 (bottom)
+          { y1: by, y2: by - domeH * 0.30, xs: [-0.36, -0.12, 0.14, 0.38] },
+          // Row 2 (mid)
+          { y1: by - domeH * 0.30, y2: by - domeH * 0.58, xs: [-0.25, 0.0, 0.25] },
+          // Row 3 (upper)
+          { y1: by - domeH * 0.58, y2: by - domeH * 0.82, xs: [-0.14, 0.14] },
+        ];
+        seams.forEach(tier => {
+          tier.xs.forEach(frac => {
+            const sx = cx + domeW * frac;
+            ctx.beginPath();
+            ctx.moveTo(sx, tier.y1);
+            ctx.lineTo(sx + 1.2 * s, tier.y2);
+            ctx.stroke();
+          });
+        });
+
+        /* 4. Entrance Tunnel / Archway (extending slightly forward-left) */
+        const tunW = 20 * s;
+        const tunH = 17 * s;
+        const tunX = cx - domeW * 0.22;
+        const tunY = by;
+
+        // Tunnel outer arch
+        ctx.beginPath();
+        ctx.moveTo(tunX - tunW * 0.50, tunY);
+        ctx.bezierCurveTo(tunX - tunW * 0.50, tunY - tunH * 1.15, tunX + tunW * 0.50, tunY - tunH * 1.15, tunX + tunW * 0.50, tunY);
+        ctx.closePath();
+
+        const tunGrad = ctx.createLinearGradient(tunX - tunW * 0.5, tunY - tunH, tunX + tunW * 0.5, tunY);
+        tunGrad.addColorStop(0, '#ffffff');
+        tunGrad.addColorStop(0.5, '#e0eefb');
+        tunGrad.addColorStop(1, '#97bcdc');
+        ctx.fillStyle = tunGrad;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(155, 190, 225, 0.45)';
+        ctx.lineWidth = 0.75 * s;
+        ctx.stroke();
+
+        // Warm Amber Light Spill from doorway onto snow
+        const lightSpill = ctx.createRadialGradient(tunX, tunY, 1 * s, tunX, tunY, 18 * s);
+        lightSpill.addColorStop(0, 'rgba(255, 195, 75, 0.55)');
+        lightSpill.addColorStop(0.4, 'rgba(255, 155, 45, 0.25)');
+        lightSpill.addColorStop(0.8, 'rgba(255, 110, 20, 0.08)');
+        lightSpill.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.beginPath();
+        ctx.ellipse(tunX, tunY + 2 * s, 18 * s, 6.5 * s, 0, 0, Math.PI * 2);
+        ctx.fillStyle = lightSpill;
+        ctx.fill();
+
+        // Inner doorway (cozy warm interior with dark arched depth)
+        const doorW = tunW * 0.65;
+        const doorH = tunH * 0.78;
+        ctx.beginPath();
+        ctx.moveTo(tunX - doorW * 0.5, tunY);
+        ctx.bezierCurveTo(tunX - doorW * 0.5, tunY - doorH * 1.15, tunX + doorW * 0.5, tunY - doorH * 1.15, tunX + doorW * 0.5, tunY);
+        ctx.closePath();
+
+        const doorGrad = ctx.createLinearGradient(tunX, tunY - doorH, tunX, tunY);
+        doorGrad.addColorStop(0, '#1c1028');
+        doorGrad.addColorStop(0.35, '#2e1532');
+        doorGrad.addColorStop(0.70, '#d96c14');
+        doorGrad.addColorStop(1, '#ffc043');
+        ctx.fillStyle = doorGrad;
+        ctx.fill();
+
+        /* 5. Fresh Powdery Snow Pillows (on dome top & tunnel roof) */
+        ctx.fillStyle = 'rgba(248, 252, 255, 0.95)';
+        // Dome top snow cap
+        ctx.beginPath();
+        ctx.ellipse(cx - 1 * s, by - domeH * 1.03, 14 * s, 3.5 * s, -0.05, 0, Math.PI * 2);
+        ctx.fill();
+        // Tunnel arch snow cap
+        ctx.beginPath();
+        ctx.ellipse(tunX, tunY - tunH * 0.95, tunW * 0.44, 2.8 * s, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Snow banks around base
+        ctx.fillStyle = 'rgba(225, 240, 255, 0.85)';
+        ctx.beginPath();
+        ctx.ellipse(cx + domeW * 0.45, by, 8 * s, 3 * s, 0.1, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(cx - domeW * 0.48, by, 9 * s, 3.2 * s, -0.1, 0, Math.PI * 2);
+        ctx.fill();
+
+        /* 6. Chimney & Gentle Cozy Hearth Steam */
+        const chimX = cx + domeW * 0.16;
+        const chimY = by - domeH * 0.96;
+        // Chimney snow block
+        ctx.fillStyle = '#e4effa';
+        ctx.fillRect(chimX - 2.5 * s, chimY - 4.5 * s, 5 * s, 4.5 * s);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(chimX - 3 * s, chimY - 5 * s, 6 * s, 1.5 * s);
+
+        // Gentle warm steam wisps
+        ctx.strokeStyle = 'rgba(255, 245, 235, 0.32)';
+        ctx.lineWidth = 1.2 * s;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(chimX, chimY - 5 * s);
+        ctx.bezierCurveTo(chimX + 2 * s, chimY - 11 * s, chimX - 3 * s, chimY - 16 * s, chimX + 1 * s, chimY - 22 * s);
+        ctx.stroke();
+
+        ctx.restore();
+      }
+
+      /* ── Rolling Snowdrifts / Winter Horizon ─────────── */
+      function drawWinterGround(ctx) {
+        const hillH = Math.min(65, SH * 0.085);
+
+        // 1. Distant Mountain Ridge (deep twilight indigo)
+        ctx.beginPath();
+        ctx.moveTo(0, SH);
+        ctx.bezierCurveTo(SW * 0.20, SH - hillH * 1.55, SW * 0.40, SH - hillH * 0.85, SW * 0.60, SH - hillH * 1.40);
+        ctx.bezierCurveTo(SW * 0.80, SH - hillH * 1.85, SW * 0.92, SH - hillH * 1.10, SW, SH - hillH * 1.30);
+        ctx.lineTo(SW, SH);
+        ctx.closePath();
+        let ridgeGrad = ctx.createLinearGradient(0, SH - hillH * 1.8, 0, SH);
+        ridgeGrad.addColorStop(0, 'rgba(28, 14, 52, 0.40)');
+        ridgeGrad.addColorStop(0.5, 'rgba(22, 10, 42, 0.65)');
+        ridgeGrad.addColorStop(1, 'rgba(15, 6, 32, 0.85)');
+        ctx.fillStyle = ridgeGrad;
+        ctx.fill();
+
+        // 2. Mid Snowdrift (soft periwinkle snow)
+        ctx.beginPath();
+        ctx.moveTo(0, SH);
+        ctx.bezierCurveTo(SW * 0.16, SH - hillH * 0.65, SW * 0.38, SH - hillH * 1.15, SW * 0.58, SH - hillH * 0.75);
+        ctx.bezierCurveTo(SW * 0.74, SH - hillH * 0.45, SW * 0.88, SH - hillH * 0.95, SW, SH - hillH * 0.60);
+        ctx.lineTo(SW, SH);
+        ctx.closePath();
+        let midGrad = ctx.createLinearGradient(0, SH - hillH * 1.2, 0, SH);
+        midGrad.addColorStop(0, 'rgba(125, 155, 205, 0.22)');
+        midGrad.addColorStop(0.4, 'rgba(85, 110, 165, 0.35)');
+        midGrad.addColorStop(1, 'rgba(35, 20, 65, 0.55)');
+        ctx.fillStyle = midGrad;
+        ctx.fill();
+
+        // 3. Foreground Snowbank (soft, powdery moonlight snow)
+        ctx.beginPath();
+        ctx.moveTo(0, SH);
+        ctx.bezierCurveTo(SW * 0.18, SH - hillH * 1.15, SW * 0.42, SH - hillH * 0.60, SW * 0.62, SH - hillH * 1.05);
+        ctx.bezierCurveTo(SW * 0.78, SH - hillH * 1.35, SW * 0.90, SH - hillH * 0.75, SW, SH - hillH * 0.95);
+        ctx.lineTo(SW, SH);
+        ctx.closePath();
+        let nearGrad = ctx.createLinearGradient(0, SH - hillH * 1.4, 0, SH);
+        nearGrad.addColorStop(0, 'rgba(235, 246, 255, 0.88)');
+        nearGrad.addColorStop(0.32, 'rgba(205, 228, 252, 0.72)');
+        nearGrad.addColorStop(0.70, 'rgba(160, 192, 230, 0.45)');
+        nearGrad.addColorStop(1, 'rgba(115, 145, 190, 0.25)');
+        ctx.fillStyle = nearGrad;
+        ctx.fill();
+
+        // 4. Frost Glisten Specks
+        sparkleTime += 0.035;
+        for (let i = 0; i < 28; i++) {
+          const gx = (i / 28) * SW + Math.sin(i * 5.7) * 22;
+          const gy = SH - hillH * 0.50 - Math.sin(i * 2.5) * hillH * 0.32 + Math.cos(i * 1.2) * hillH * 0.12;
+          const pulse = (Math.sin(sparkleTime + i * 1.3) + 1) / 2;
+          ctx.beginPath();
+          ctx.arc(gx, gy, 0.7 + pulse * 0.8, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 255, 255, ${0.15 + pulse * 0.55})`;
+          ctx.fill();
+        }
+      }
+
+      /* ── Scene Trees, Igloo & Snowman Placement ──────── */
+      let trees = [], snowmanCfg = null, iglooCfg = null;
+      function buildScene() {
+        const hillH = Math.min(65, SH * 0.085);
+
+        // Pine trees positioned on sides so middle remains open for card readability
+        trees = [
+          // Left side grove (distant to foreground)
+          { x: SW * 0.03, h: Math.min(80, SH * 0.105), a: 0.55, fg: false },
+          { x: SW * 0.08, h: Math.min(105, SH * 0.135), a: 0.75, fg: true },
+          { x: SW * 0.13, h: Math.min(90, SH * 0.115), a: 0.65, fg: false },
+          // Right side grove
+          { x: SW * 0.88, h: Math.min(85, SH * 0.110), a: 0.60, fg: false },
+          { x: SW * 0.94, h: Math.min(110, SH * 0.140), a: 0.75, fg: true },
+        ];
+
+        // Snowman placed on the right-hand snowdrift (out of the central reading line)
+        const isMobile = SW < 650;
+        const smX = isMobile ? SW * 0.80 : SW * 0.82;
+        const smBase = SH - hillH * 0.75;
+        const smScale = Math.min(1.05, Math.max(0.60, SW / 900));
+
+        snowmanCfg = { cx: smX, by: smBase, s: smScale };
+
+        // Realistic Igloo placed near left of snowman
+        const iglooOffset = isMobile ? 68 * smScale : 86 * smScale;
+        const iglooX = smX - iglooOffset;
+        const iglooBase = smBase + 1.5 * smScale;
+        const iglooScale = smScale * 0.92;
+
+        iglooCfg = { cx: iglooX, by: iglooBase, s: iglooScale };
+      }
+
+      /* ── Init flakes ─────────────────────────────────── */
+      function initFlakes() {
+        flakes.length = 0;
+        const configs = getLayerConfigs();
+        for (const cfg of configs) {
+          for (let i = 0; i < cfg.n; i++) {
+            flakes.push(makeFlake(cfg, Math.random() * SH));
+          }
+        }
+      }
+
+      /* ── Resize handler ──────────────────────────────── */
+      function resizeSnow() {
+        SW = snowBgCanvas.width = snowCanvas.width = window.innerWidth;
+        SH = snowBgCanvas.height = snowCanvas.height = window.innerHeight;
+        buildScene();
+      }
+      window.addEventListener('resize', () => { resizeSnow(); initFlakes(); });
+
+      /* ── Background Scenery Render ───────────────────── */
+      function renderBackgroundScene() {
+        bgCtx.clearRect(0, 0, SW, SH);
+        drawWinterGround(bgCtx);
+        for (const t of trees) drawOrganicPine(bgCtx, t.x, t.h, t.a, t.fg);
+        if (iglooCfg) drawIgloo(bgCtx, iglooCfg.cx, iglooCfg.by, iglooCfg.s);
+        if (snowmanCfg) drawSnowman(bgCtx, snowmanCfg.cx, snowmanCfg.by, snowmanCfg.s);
+      }
+
+      /* ── Animation Loop ──────────────────────────────── */
+      let frameCount = 0;
+      function animate() {
+        // Redraw background scenery at smooth cadence for sparkling snow & candlelight
+        frameCount++;
+        if (frameCount % 2 === 0) {
+          renderBackgroundScene();
+        }
+
+        // Foreground falling snowflakes
+        sCtx.clearRect(0, 0, SW, SH);
+        for (let i = 0; i < flakes.length; i++) {
+          const f = flakes[i];
+          f.sway += f.swaySpd;
+          f.x += f.vx + Math.sin(f.sway) * f.swayAmp;
+          f.y += f.vy * scrollFactor;
+          if (f.crystal) f.rot += f.rotSpd;
+
+          if (f.y > SH + 14) {
+            flakes[i] = makeFlake(f.cfg, -8 - Math.random() * 24);
+          } else {
+            if (f.x > SW + 12) f.x = -4;
+            if (f.x < -12) f.x = SW + 4;
+            f.crystal ? drawCrystal(f) : drawRound(f);
+          }
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      resizeSnow();
+      initFlakes();
+      renderBackgroundScene();
+      animate();
+    })();
 
     /* ─── NIGHT SKY ENGINE ─── */
     const sky = document.getElementById('sky-canvas');
@@ -2627,6 +3810,43 @@
         ctx.beginPath(); ctx.arc(cx, cy, cr, 0, Math.PI * 2); ctx.fillStyle = cg; ctx.fill();
       });
     }
+    let currentScrollProg = 0;
+    window.addEventListener('scroll', () => {
+      const maxScroll = (document.documentElement.scrollHeight - window.innerHeight) || 1;
+      currentScrollProg = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+      const frost = document.getElementById('screenFrostVignette');
+      if (frost) {
+        // Melts away as warmth overcomes distance
+        frost.style.opacity = String(Math.max(0.08, 1 - currentScrollProg * 0.90));
+      }
+    }, { passive: true });
+
+    function drawAurora(t) {
+      ctx.save();
+      const wave1 = Math.sin(t * 0.0006) * 36;
+      const wave2 = Math.cos(t * 0.0008) * 26;
+      // Hue shifts subtly with scroll from deep northern teal to majestic twilight violet
+      const r1 = Math.floor(25 + currentScrollProg * 65);
+      const g1 = Math.floor(190 - currentScrollProg * 75);
+      const b1 = Math.floor(205 + currentScrollProg * 45);
+
+      const ag = ctx.createLinearGradient(0, H * 0.05, W, H * 0.55);
+      ag.addColorStop(0, 'rgba(0,0,0,0)');
+      ag.addColorStop(0.35, `rgba(${r1}, ${g1}, ${b1}, 0.045)`);
+      ag.addColorStop(0.65, `rgba(165, 65, 230, ${0.035 + currentScrollProg * 0.035})`);
+      ag.addColorStop(1, 'rgba(0,0,0,0)');
+
+      ctx.beginPath();
+      ctx.moveTo(0, H * 0.16 + wave1);
+      ctx.bezierCurveTo(W * 0.35, H * 0.08 + wave2, W * 0.68, H * 0.26 - wave1, W, H * 0.15 + wave2);
+      ctx.lineTo(W, H * 0.55);
+      ctx.bezierCurveTo(W * 0.68, H * 0.65 - wave1, W * 0.35, H * 0.44 + wave2, 0, H * 0.48);
+      ctx.closePath();
+      ctx.fillStyle = ag;
+      ctx.fill();
+      ctx.restore();
+    }
+
     class ShootingStar {
       constructor(delay = 0) { this.active = false; this.wait = Math.random() * 10000 + 4000; this.timer = delay; }
       fire() { this.x = Math.random() * W * 0.75 + W * 0.12; this.y = Math.random() * H * 0.38; const ang = Math.PI / 4 + (Math.random() - 0.5) * 0.55, spd = Math.random() * 11 + 8; this.vx = -Math.cos(ang) * spd; this.vy = Math.sin(ang) * spd; this.trailLen = Math.random() * 110 + 65; this.life = 0; this.maxLife = Math.ceil(this.trailLen / spd * 62); this.alpha = 0; this.active = true; this.timer = 0; this.wait = Math.random() * 12000 + 5000; }
@@ -2635,7 +3855,7 @@
     }
     const shooters = Array.from({ length: 4 }, (_, i) => new ShootingStar(i * 3500));
     let lastT = 0;
-    function frame(t) { const dt = t - lastT; lastT = t; ctx.clearRect(0, 0, W, H); drawMilkyWay(); drawStars(); drawMoon(t); shooters.forEach(s => { s.update(dt); s.draw(); }); requestAnimationFrame(frame); }
+    function frame(t) { const dt = t - lastT; lastT = t; ctx.clearRect(0, 0, W, H); drawMilkyWay(); drawAurora(t); drawStars(); drawMoon(t); shooters.forEach(s => { s.update(dt); s.draw(); }); requestAnimationFrame(frame); }
     window.addEventListener('resize', resizeSky); resizeSky(); requestAnimationFrame(frame);
 
     /* ─── SCROLL REVEAL ─── */
@@ -2646,15 +3866,53 @@
 
     function startStory() { document.getElementById('chapter1').scrollIntoView({ behavior: 'smooth' }); }
 
-    /* ─── FLOATING SPARKLES ─── */
-    const sparkleChars = ['✨', '🌟', '💫', '🎊', '🌙', '⭐', '💜', '❤️'];
-    document.addEventListener('click', e => { if (e.target.closest('button')) return; spawn(e.clientX, e.clientY); });
-    function spawn(x, y) {
-      const el = document.createElement('div'); el.className = 'floating-sparkle';
-      el.textContent = sparkleChars[Math.floor(Math.random() * sparkleChars.length)];
-      el.style.left = x + 'px'; el.style.top = y + 'px';
-      document.body.appendChild(el); setTimeout(() => el.remove(), 3000);
+    /* ─── WINTER SPARKLE BURST (Touch / Click) ─── */
+    const winterIcons = ['❄️', '✨', '⭐', '💫', '✦'];
+    function spawnSparkleBurst(x, y) {
+      const count = Math.floor(Math.random() * 2) + 3; // 3 to 4 sparkles
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement('div');
+        el.className = 'winter-sparkle';
+        el.textContent = winterIcons[Math.floor(Math.random() * winterIcons.length)];
+        const size = Math.random() * 5 + 13; // 13px - 18px
+        el.style.fontSize = size + 'px';
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        el.style.opacity = '1';
+        el.style.transform = 'translate(-50%, -50%) scale(1)';
+        document.body.appendChild(el);
+
+        const angle = (Math.PI * 2 * i / count) + (Math.random() - 0.5) * 0.5;
+        const dist = Math.random() * 26 + 22; // 22px to 48px burst radius
+        const tx = Math.cos(angle) * dist;
+        const ty = Math.sin(angle) * dist - 10; // gentle upward float
+        const rot = (Math.random() - 0.5) * 110;
+
+        requestAnimationFrame(() => {
+          el.style.transform = `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0.2) rotate(${rot}deg)`;
+          el.style.opacity = '0';
+        });
+
+        setTimeout(() => el.remove(), 750);
+      }
     }
+
+    let lastTapTime = 0;
+    function handleTap(e) {
+      if (e.target && e.target.closest && e.target.closest('button, input, textarea, a, .cocoa-modal-card')) return;
+      const now = Date.now();
+      if (e.type === 'touchstart') lastTapTime = now;
+      if (e.type === 'click' && now - lastTapTime < 400) return; // Prevent double trigger on mobile
+
+      const clientX = e.touches && e.touches[0] ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches && e.touches[0] ? e.touches[0].clientY : e.clientY;
+      if (clientX != null && clientY != null) {
+        spawnSparkleBurst(clientX, clientY);
+      }
+    }
+
+    document.addEventListener('click', handleTap, { passive: true });
+    document.addEventListener('touchstart', handleTap, { passive: true });
 
     /* ─── CONFETTI ─── */
     const cC = document.getElementById('confetti-canvas'); const cX = cC.getContext('2d'); let cp = [], ca = false;
